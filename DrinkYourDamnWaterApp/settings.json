@@ -11,7 +11,7 @@
     },
     {
       "type": "Websites",
-      "drinkAmount": 2,
+      "drinkAmount": "2",
       "size": 0,
       "list": [
         "YouTube",
@@ -21,15 +21,15 @@
     {
       "type": "RegularTime",
       "active": true,
-      "drinkAmount": 1,
+      "drinkAmount": "1",
       "time": "1",
       "size": 0
     },
     {
       "type": "DoomScroll",
-      "active": false,
+      "active": true,
       "drinkAmount": 2,
-      "time": "8",
+      "time": "2",
       "size": 0
     }
   ],
@@ -45,7 +45,7 @@
     },
     {
       "type": "Websites",
-      "drinkAmount": "1",
+      "drinkAmount": "3",
       "size": 0,
       "list": [
         "YouTube",
@@ -55,15 +55,15 @@
     {
       "type": "RegularTime",
       "active": true,
-      "drinkAmount": "2",
-      "time": "3",
+      "drinkAmount": "1",
+      "time": "4",
       "size": 2
     },
     {
       "type": "DoomScroll",
-      "active": false,
+      "active": true,
       "drinkAmount": 2,
-      "time": "8",
+      "time": "1",
       "size": 0
     }
   ]

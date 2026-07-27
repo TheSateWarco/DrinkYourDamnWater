@@ -48,7 +48,8 @@ class MainWindow(QMainWindow):
                     generalTimerNote.message ="Take " + str(data["UserSettings"][x]["drinkAmount"]) + " "+ drinksize+ " " + "of water!"
                 case 3:
                     doomScrollNoteTimerNote.message ="Take " + str(data["UserSettings"][x]["drinkAmount"]) + " "+ drinksize+ " " + "of water!"
-                
+
+        doomScrollActive = data["UserSettings"][3]["active"]
         
         stopBtn.clicked.connect((lambda: program.stopProgram(self)))
         
@@ -58,7 +59,7 @@ class MainWindow(QMainWindow):
         widget.setLayout(layout)
         self.setCentralWidget(widget)
         n = int(data["UserSettings"][2]["time"])
-        startProgramThread = thread.Thread(target=program.startProgram, args=[n,data["UserSettings"][1]["list"], data["UserSettings"][0]["list"],data["UserSettings"][2]["active"]])
+        startProgramThread = thread.Thread(target=program.startProgram, args=[n,data["UserSettings"][1]["list"], data["UserSettings"][0]["list"],data["UserSettings"][2]["active"],doomScrollActive,int(data["UserSettings"][3]["time"])])
         # start notification system (check app py)
         startProgramThread.start()
 

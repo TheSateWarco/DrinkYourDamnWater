@@ -148,7 +148,7 @@ def makeRule(data, widgetMatrix, numOfRule):
         widgetMatrix[numOfRule][0].setRange(0,600)
         string = " minutes "
         if numOfRule == 3:
-            string = " seconds of doomscrolling, take "
+            string = " minutes of doomscrolling, take "
         label2 = QLabel(string)
         # num range
         widgetMatrix[numOfRule][1] = QSpinBox()
