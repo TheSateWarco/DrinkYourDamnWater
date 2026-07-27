@@ -1,0 +1,70 @@
+{
+  "OGSettings": [
+    {
+      "type": "Applications",
+      "drinkAmount": "2",
+      "size": 0,
+      "list": [
+        "Spotify",
+        "Visual Studio Code"
+      ]
+    },
+    {
+      "type": "Websites",
+      "drinkAmount": 2,
+      "size": 0,
+      "list": [
+        "YouTube",
+        "ChatGPT"
+      ]
+    },
+    {
+      "type": "RegularTime",
+      "active": true,
+      "drinkAmount": 1,
+      "time": "1",
+      "size": 0
+    },
+    {
+      "type": "DoomScroll",
+      "active": false,
+      "drinkAmount": 2,
+      "time": "8",
+      "size": 0
+    }
+  ],
+  "UserSettings": [
+    {
+      "type": "Applications",
+      "drinkAmount": "2",
+      "size": 1,
+      "list": [
+        "Spotify",
+        "Visual Studio Code"
+      ]
+    },
+    {
+      "type": "Websites",
+      "drinkAmount": "1",
+      "size": 0,
+      "list": [
+        "YouTube",
+        "ChatGPT"
+      ]
+    },
+    {
+      "type": "RegularTime",
+      "active": true,
+      "drinkAmount": "2",
+      "time": "3",
+      "size": 2
+    },
+    {
+      "type": "DoomScroll",
+      "active": false,
+      "drinkAmount": 2,
+      "time": "8",
+      "size": 0
+    }
+  ]
+}
