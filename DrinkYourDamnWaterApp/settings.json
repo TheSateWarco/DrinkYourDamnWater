@@ -56,12 +56,12 @@
       "type": "RegularTime",
       "active": true,
       "drinkAmount": "1",
-      "time": "4",
+      "time": "30",
       "size": 2
     },
     {
       "type": "DoomScroll",
-      "active": true,
+      "active": false,
       "drinkAmount": 2,
       "time": "1",
       "size": 0

@@ -21,10 +21,17 @@ class MainWindow(QMainWindow):
     # initialize window
     def __init__(self):
         super().__init__()
+        
+            #self.setStyleSheet("QMainWindow{background-image: url('./hand-drawn-speech-bubble-cartoon-ah-shout-png-1343987513.png')};")
+        # self.setStyleSheet("QMainWindow{background-color: #C5D6F0;}"
+        #                     "QPushButton{background-color: #BBCEF0;" 
+        #                     "border-style: solid;"
+        #                 "border-width: 1px;"
+        #                 "border-color: #AEBAD2;}")
         # title
         self.setWindowTitle("Drink Your Damn Water!")
         # width, height
-        self.resize(200,100)
+        self.setFixedSize(300,150)
 
         program.createMainScreen(self)
 
@@ -72,7 +79,9 @@ class MainWindow(QMainWindow):
                     "1. Uses a general timer to remind you to drink water\n"+
                     "2. Tracks what applications and websites are open and\n"+
                     "will notify when it is opened after a few seconds\n"+
-                    "3. Uses webcam facial tracking to see if you are doomscrolling on your phone\n\n"+
+                    "3. Experimental: Uses webcam facial tracking to see if\n"+ 
+                    "you are doomscrolling on your phone. This is AUTOMATICALLY"+
+                    "turned off my default\n\n"+
                     "Note: These can be changed in settings"
                     )
         help.exec()
@@ -80,7 +89,7 @@ class MainWindow(QMainWindow):
     def creditsClicked(self):
             credits = QMessageBox()
             credits.setWindowTitle("Credits")
-            credits.setText("Programming: TheSateWarco")
+            credits.setText("Main Programmer: TheSateWarco")
             credits.exec()
     # settings pop up
     def settingsClicked(self):
@@ -127,7 +136,6 @@ class MainWindow(QMainWindow):
         settings.exec()
         # save changes button
 
-    
 
 
 # make sure this is main
