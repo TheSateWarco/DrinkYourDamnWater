@@ -146,8 +146,10 @@ if __name__=='__main__':
     
     # QApplication instance
     app = QApplication()
+    app.setWindowIcon(QIcon("Logo.png"))
     # create
     window = MainWindow()
+    window.setWindowIcon(QIcon("Logo.png"))
     # show
     window.show()
     #program.startProgram(n, state)
