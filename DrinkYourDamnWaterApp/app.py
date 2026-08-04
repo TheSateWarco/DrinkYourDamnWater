@@ -34,16 +34,19 @@ def extract_website_from_title(title):
 
 def stopProgram(self):
     
-    createMainScreen(self)
-    changeStateThread = thread.Thread(target=changeState, args=[])
+    
+    changeStateThread = thread.Thread(target=changeState, args=[self])
     changeStateThread.start()
 
-def changeState():
-    global state, lock
-    lock.acquire() 
-    state = 0
-    lock.release()
-    #print("state: " + str(state))
+def changeState(self):
+    global eventState
+    while self.workerThread.is_alive():
+        Qtimer(2)
+    self.workerThread.join()
+    createMainScreen(self)
+    
+    eventState.set()
+    eventState.clear()
 
 
 def createMainScreen(self):
@@ -86,7 +89,7 @@ def checkSize(amount, number):
 def startProgram(mainTimer, listOfWebsites, listOfApps, regularTimeActive,doomScrollActive,mainDSTimer):
     timer = 4*mainTimer
     doomScrollTimer = 4*mainDSTimer
-    global state, lock, generalTimerNote,doomScrollNoteTimerNote,websiteNote,appTimerNote, faceMesh, connectionsFaceOval, connectionsIris
+    global eventState, generalTimerNote,doomScrollNoteTimerNote,websiteNote,appTimerNote, faceMesh, connectionsFaceOval, connectionsIris
     # Initial active window title
     lastActiveWindow = get_lastActiveWindow_title()
     # not sure if the spam timmer is needed anymore
@@ -102,7 +105,7 @@ def startProgram(mainTimer, listOfWebsites, listOfApps, regularTimeActive,doomSc
                 if regularTimeActive:
                     generalTimerNote.send()
             else:
-                time.sleep(15)
+                eventState = event.wait(15)
                 #lock.acquire() 
                 #print("state"+ str(state))
                 #lock.release()

@@ -1,7 +1,7 @@
 # ui pyside
 from PySide6.QtWidgets import QApplication, QMainWindow, QPushButton, QDialog, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QSpinBox, QComboBox, QListWidget, QLineEdit, QCheckBox, QSpacerItem,QMessageBox,QColorDialog
 
-from PySide6.QtGui import QIcon
+from PySide6.QtGui import QIcon, Qtimer
 import json
 
 from functools import partial

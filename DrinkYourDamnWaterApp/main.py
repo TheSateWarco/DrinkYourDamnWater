@@ -66,7 +66,8 @@ class MainWindow(QMainWindow):
         widget.setLayout(layout)
         self.setCentralWidget(widget)
         n = int(data["UserSettings"][2]["time"])
-        startProgramThread = thread.Thread(target=program.startProgram, args=[n,data["UserSettings"][1]["list"], data["UserSettings"][0]["list"],data["UserSettings"][2]["active"],doomScrollActive,int(data["UserSettings"][3]["time"])])
+        startProgramThread = thread.Thread(target=program.startProgram, args=[n,data["UserSettings"][1]["list"], data["UserSettings"][0]["list"],data["UserSettings"][2]["active"],doomScrollActive,int(data["UserSettings"][3]["time"])],daemon=True)
+        self.workerThread = startProgramThread
         # start notification system (check app py)
         startProgramThread.start()
 
