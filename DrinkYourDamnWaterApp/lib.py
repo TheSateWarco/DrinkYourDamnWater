@@ -1,7 +1,9 @@
 # ui pyside
 from PySide6.QtWidgets import QApplication, QMainWindow, QPushButton, QDialog, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QSpinBox, QComboBox, QListWidget, QLineEdit, QCheckBox, QSpacerItem,QMessageBox,QColorDialog
 
-from PySide6.QtGui import QIcon, Qtimer
+from PySide6.QtGui import QIcon
+from PySide6.QtCore import Signal
+
 import json
 
 from functools import partial
@@ -25,7 +27,11 @@ import os
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 import mediapipe as mp
 
-state = 1
+state = 0
+
+eventState = thread.Event()
+
+stopFlag = thread.Event()
 
 lock = thread.Lock()
 

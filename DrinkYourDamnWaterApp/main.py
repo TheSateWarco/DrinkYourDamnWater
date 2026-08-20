@@ -17,7 +17,7 @@ def openJson():
         
 # main window
 class MainWindow(QMainWindow):
-    
+    returnToMain = Signal()
     # initialize window
     def __init__(self):
         super().__init__()
@@ -32,7 +32,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Drink Your Damn Water!")
         # width, height
         self.setFixedSize(300,150)
-
+        self.returnToMain.connect(lambda: program.createMainScreen(self))
         program.createMainScreen(self)
 
     # start button
