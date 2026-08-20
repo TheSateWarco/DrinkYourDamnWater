@@ -9,10 +9,10 @@ This app will help you build this habit so you don’t have to depend on it for 
 ---
 
 ## Features
-- Regular timer — get reminded every X minutes, no matter what you're doing
-- App/website triggers — get notified when specific apps or websites open (e.g. YouTube, Spotify, VS Code)
-- Simple interface — fully customizable notification settings (drink amount, unit, timing, active/inactive)
-- Experimental doomscroll detection — (off by default) uses your webcam and on-device facial tracking (MediaPipe) to detect when you're looking down for an extended period, as if scrolling on your phone, and reminds you to drink
+- Regular timer: get reminded every X minutes, no matter what you're doing
+- App/website triggers:get notified when specific apps or websites open (e.g. YouTube, Spotify, VS Code)
+- Simple interface:fully customizable notification settings (drink amount, unit, timing, active/inactive)
+- Experimental doomscroll detection: (off by default) uses your webcam and on-device facial tracking (MediaPipe) to detect when you're looking down for an extended period, as if scrolling on your phone, and reminds you to drink
 
 > Privacy note: the doomscroll detection feature processes webcam frames locally on your machine; nothing is uploaded or sent anywhere. It's off by default and must be explicitly enabled in Settings.
 
