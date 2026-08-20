@@ -60,6 +60,7 @@ pip install -r requirements.txt
 7. Download
 
 Prefer not to build from source? The packaged app will soon be on STEAM and Itch.io for $0.99
+
 ---
 
 ## Contributing
