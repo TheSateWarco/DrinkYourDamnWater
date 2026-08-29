@@ -38,7 +38,7 @@
     {
       "type": "Applications",
       "drinkAmount": "2",
-      "size": 1,
+      "size": 0,
       "list": [
         "Spotify",
         "Visual Studio Code",
@@ -47,7 +47,7 @@
     },
     {
       "type": "Websites",
-      "drinkAmount": "3",
+      "drinkAmount": "2",
       "size": 0,
       "list": [
         "YouTube",
@@ -59,13 +59,13 @@
       "active": true,
       "drinkAmount": "1",
       "time": "1",
-      "size": 2
+      "size": 0
     },
     {
       "type": "DoomScroll",
-      "active": false,
+      "active": true,
       "drinkAmount": 2,
-      "time": "1",
+      "time": "2",
       "size": 0
     }
   ]

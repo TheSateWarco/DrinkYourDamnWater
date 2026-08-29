@@ -86,6 +86,8 @@ def checkSize(amount, number):
     if int(amount) > 1:
         size = size + "s"
     return size
+
+
 def startProgram(mainTimer, listOfWebsites, listOfApps, regularTimeActive,doomScrollActive,mainDSTimer):
     timer = 4*mainTimer
     doomScrollTimer = 4*mainDSTimer

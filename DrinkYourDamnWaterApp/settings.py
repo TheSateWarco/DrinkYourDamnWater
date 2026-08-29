@@ -3,229 +3,126 @@
 from lib import *
 
 # write to the setting json
-def changeConfig(instruction, data, settings, ruleAmount,widgetMatrix):
+def changeConfig(instruction, data, settings, allRuleWidgets):
     if instruction == "restore":
         data["UserSettings"] = data["OGSettings"]
+
+    for rule in Rule:
+        widgets = allRuleWidgets[rule]
+        record = data["UserSettings"][rule.value]
+
+        if instruction == "apply":
+            record["drinkAmount"] = widgets["amount"].value()
+            record["size"] = widgets["unit"].currentIndex()
+            if "itemList" in widgets:
+                record["list"] = [widgets["itemList"].item(i).text()
+                                for i in range(widgets["itemList"].count())]
+            if "activeToggle" in widgets:
+                record["active"] = widgets["activeToggle"].isChecked()
+            if "timer" in widgets:
+                record["time"] = widgets["timer"].value()
+
+        elif instruction == "restore":
+            widgets["amount"].setValue(int(record["drinkAmount"]))
+            widgets["unit"].setCurrentIndex(int(record["size"]))
+            if "itemList" in widgets:
+                widgets["itemList"].clear()
+                for item in record["list"]:
+                    widgets["itemList"].addItem(item)
+            if "activeToggle" in widgets:
+                widgets["activeToggle"].setChecked(record["active"])
+            if "timer" in widgets:
+                widgets["timer"].setValue(int(record["time"]))
+
     with open('settings.json', "w") as json_file:
         json.dump(data, json_file, indent=2)
-    if instruction == "restore":
-        for numOfRule in range(ruleAmount):
-            print(numOfRule)
-            match (numOfRule):
-                case 0:
-                    # set the value to current calue in python dict
-                    widgetMatrix[numOfRule][0].setValue(int(data["UserSettings"][0]["drinkAmount"]))
-                    # set the value to current calue in python dict
-                    widgetMatrix[numOfRule][1].setCurrentIndex(int(data["UserSettings"][0]["size"]))
-                    widgetMatrix[numOfRule][2].clear()
-                    for i in data["UserSettings"][0]["list"]:
-                        print(i)
-                        widgetMatrix[numOfRule][2].addItem(i)
-                        
-                case 1:
-                    # set the value to current calue in python dict
-                    widgetMatrix[numOfRule][0].setValue(int(data["UserSettings"][1]["drinkAmount"]))
-                    # set the value to current calue in python dict
-                    widgetMatrix[numOfRule][1].setCurrentIndex(int(data["UserSettings"][1]["size"]))
-                    widgetMatrix[numOfRule][2].clear()
-                    for i in data["UserSettings"][1]["list"]:
-                        widgetMatrix[numOfRule][2].addItem(i)
-                case 2:
-                    widgetMatrix[numOfRule][3].setChecked(data["UserSettings"][2]["active"])
-                    widgetMatrix[numOfRule][0].setValue(int(data["UserSettings"][2]["time"]))
-                    widgetMatrix[numOfRule][1].setValue(int(data["UserSettings"][2]["drinkAmount"]))
-                    widgetMatrix[numOfRule][2].setCurrentIndex(int(data["UserSettings"][2]["size"]))
 
-                case 3:
-                    widgetMatrix[numOfRule][3].setChecked(data["UserSettings"][3]["active"])
-                    widgetMatrix[numOfRule][0].setValue(int(data["UserSettings"][3]["time"]))
-                    widgetMatrix[numOfRule][1].setValue(int(data["UserSettings"][3]["drinkAmount"]))
-                    widgetMatrix[numOfRule][2].setCurrentIndex(int(data["UserSettings"][3]["size"]))
-        settings.update()
+    settings.update()
 # change the python dictionary
 def changeValue(data, numOfRule, subpartOfRule, newValue):
         data["UserSettings"][numOfRule][subpartOfRule] = newValue
         
 
-def makeRule(data, widgetMatrix, numOfRule):
-    # cointainer that will be returned
+def makeRule(data, rule:Rule):
+    spec =  RULE_SPECS[rule]
     container = QVBoxLayout()
-    # message includes text, num range, and size of drink
     message = QHBoxLayout()
-    # check numOfRule if the number is a website or application
-    if numOfRule == 0 or numOfRule == 1:
-        # text shown for the rule
-        string = "Following websites will require "
-        if numOfRule == 0:
-            string = "Following applications will require "
-        label = QLabel(string)
-        # num range of amount of drinks
-        widgetMatrix[numOfRule][0] = QSpinBox()
-        widgetMatrix[numOfRule][0].setRange(1,10)
-        
-        # dropdown of type of drink
-        widgetMatrix[numOfRule][1] = QComboBox()
-        widgetMatrix[numOfRule][1].addItems(["Sip", "Shot", "Cup"])
-        
-        # - button (delete)
-        delete = QPushButton("-")
-        
-        # message stuff
-        message.addWidget(label)
-        message.addWidget(widgetMatrix[numOfRule][0])
-        message.addWidget(widgetMatrix[numOfRule][1])
-        message.addWidget(delete)
-        container.addLayout(message)
+    widgets: dict[str, QWidget] = {}
 
-        # set values as currents
-        if numOfRule == 0:
-            # set the value to current calue in python dict
-            widgetMatrix[numOfRule][0].setValue(int(data["UserSettings"][0]["drinkAmount"]))
-            # set the value to current calue in python dict
-            widgetMatrix[numOfRule][1].setCurrentIndex(int(data["UserSettings"][0]["size"]))
-            # set change val func to amount
-            changeVal = partial(changeValue,data, numOfRule, "drinkAmount")
-            # connect the amount change signel to the function
-            widgetMatrix[0][0].textChanged.connect(changeVal)
-            # set change val func to type
-            changeVal = partial(changeValue,data, numOfRule, "size")
-            # connect the amount change signel to the function
-            widgetMatrix[0][1].currentIndexChanged.connect(changeVal)
-        else:
-            # set the value to current calue in python dict
-            widgetMatrix[numOfRule][0].setValue(int(data["UserSettings"][1]["drinkAmount"]))
-            # set the value to current calue in python dict
-            widgetMatrix[numOfRule][1].setCurrentIndex(int(data["UserSettings"][1]["size"]))
-            # set change val func to amount
-            changeVal = partial(changeValue,data, numOfRule, "drinkAmount")
-            # connect the amount change signel to the function
-            widgetMatrix[1][0].textChanged.connect(changeVal)
-            # set change val func to type
-            changeVal = partial(changeValue,data, numOfRule, "size")
-            # connect the amount change signel to the function
-            widgetMatrix[1][1].currentIndexChanged.connect(changeVal)
+    label = QLabel(spec.label)
+    message.addWidget(label)
 
-        # make list of web/apps
-        widgetMatrix[numOfRule][2] = QListWidget()
-        widgetMatrix[numOfRule][2].setDisabled(False)
-        if numOfRule == 0:
-            
-            for i in data["UserSettings"][0]["list"]:
-                widgetMatrix[numOfRule][2].addItem(i)
-        else:
-            for i in data["UserSettings"][1]["list"]:
-                widgetMatrix[numOfRule][2].addItem(i)
-        # connect delete button
-        delete.clicked.connect(lambda: deleteItem(data, numOfRule, widgetMatrix[numOfRule][2]))
 
-        # insert box
-        insertLine = QHBoxLayout()
-        editBox = QLineEdit("New Item")
+    if "itemList" in spec.features:
+        widgets["itemList"] = QListWidget()
+        for item in data["UserSettings"][rule.value]["list"]:
+            widgets["itemList"].addItem(item)
 
-        # + button
-        widgetMatrix[numOfRule][3] = QPushButton("+")
-        insertLine.addWidget(editBox)
-        insertLine.addWidget(widgetMatrix[numOfRule][3])
-        # conned add button
-        if numOfRule == 0:
-            widgetMatrix[numOfRule][3].clicked.connect(lambda: addNewLine(data, 0, widgetMatrix[numOfRule][2], editBox))
-        else:
-            widgetMatrix[numOfRule][3].clicked.connect(lambda: addNewLine(data, 1, widgetMatrix[numOfRule][2], editBox))
+    if "activeToggle" in spec.features:
+        widgets["activeToggle"] = QCheckBox()
+        widgets["activeToggle"].setChecked(data["UserSettings"][rule.value]["active"])
+        message.addWidget(widgets["activeToggle"])
+
+    if "timer" in spec.features:
+        widgets["timer"] = QSpinBox()
+        widgets["timer"].setRange(0, 600)
+        widgets["timer"].setValue(int(data["UserSettings"][rule.value]["time"]))
+        message.addWidget(widgets["timer"])
+
+    if "deleteButton" in spec.features:
+        widgets["deleteButton"] = QPushButton("-")
+        widgets["deleteButton"].clicked.connect(
+        lambda: deleteItem(data, rule.value, widgets["itemList"])
+    )
+
         
+    if "editBox" in spec.features:
+        widgets["editBox"] = QLineEdit("New Item")
         
-        container.addWidget(widgetMatrix[numOfRule][2])
-        container.addLayout(insertLine)
 
-    # static rule (2 or 3)
-    else:
-        # checkbox
-        widgetMatrix[numOfRule][3] = QCheckBox()
-        # text
-        string = "After "
-        label1 = QLabel(string)
-        # sec range
-        widgetMatrix[numOfRule][0] = QSpinBox()
-        widgetMatrix[numOfRule][0].setRange(0,600)
-        string = " minutes "
-        if numOfRule == 3:
-            string = " minutes of doomscrolling, take "
-        label2 = QLabel(string)
-        # num range
-        widgetMatrix[numOfRule][1] = QSpinBox()
-        widgetMatrix[numOfRule][1].setRange(1,10)
-        # dropdown
-        widgetMatrix[numOfRule][2] = QComboBox()
-        widgetMatrix[numOfRule][2].addItems(["Sip", "Shot", "Cup"])
+    if "addButton" in spec.features:
+        widgets["addButton"] = QPushButton("+")
+        widgets["addButton"].clicked.connect(
+        lambda: addNewLine(data, rule.value, widgets["itemList"], widgets["editBox"])
+    )
         
-        # message stuff
-        message.addWidget(widgetMatrix[numOfRule][3])
-        message.addWidget(label1)
-        message.addWidget(widgetMatrix[numOfRule][0])
-        message.addWidget(label2)
-        message.addWidget(widgetMatrix[numOfRule][1])
-        message.addWidget(widgetMatrix[numOfRule][2])
-        container.addLayout(message)
 
-        # set values as currents
-        if numOfRule == 3:
-            widgetMatrix[numOfRule][3].setChecked(data["UserSettings"][3]["active"])
-            # set change val func to amount
-            changeVal = partial(changeValue,data, numOfRule, "active")
-            widgetMatrix[numOfRule][3].toggled.connect(changeVal)
-            widgetMatrix[numOfRule][0].setValue(int(data["UserSettings"][3]["time"]))
-            # set change val func to amount
-            changeVal = partial(changeValue,data, numOfRule, "time")
-            # connect the amount change signel to the function
-            widgetMatrix[3][0].textChanged.connect(changeVal)
-            widgetMatrix[numOfRule][1].setValue(int(data["UserSettings"][3]["drinkAmount"]))
-            # set change val func to amount
-            changeVal = partial(changeValue,data, numOfRule, "drinkAmount")
-            # connect the amount change signel to the function
-            widgetMatrix[3][1].textChanged.connect(changeVal)
-            widgetMatrix[numOfRule][2].setCurrentIndex(int(data["UserSettings"][3]["size"]))
-            # set change val func to amount
-            changeVal = partial(changeValue,data, numOfRule, "size")
-            # connect the amount change signel to the function
-            widgetMatrix[3][2].currentIndexChanged.connect(changeVal)
-        else:
-            widgetMatrix[numOfRule][3].setChecked(data["UserSettings"][2]["active"])
-            # set change val func to amount
-            changeVal = partial(changeValue,data, numOfRule, "active")
-            widgetMatrix[numOfRule][3].toggled.connect(changeVal)
-            widgetMatrix[numOfRule][0].setValue(int(data["UserSettings"][2]["time"]))
-            # set change val func to amount
-            changeVal = partial(changeValue,data, numOfRule, "time")
-            # connect the amount change signel to the function
-            widgetMatrix[2][0].textChanged.connect(changeVal)
-            widgetMatrix[numOfRule][1].setValue(int(data["UserSettings"][2]["drinkAmount"]))
-            # set change val func to amount
-            changeVal = partial(changeValue,data, numOfRule, "drinkAmount")
-            # connect the amount change signel to the function
-            widgetMatrix[2][1].textChanged.connect(changeVal)
-            widgetMatrix[numOfRule][2].setCurrentIndex(int(data["UserSettings"][2]["size"]))
-            # set change val func to amount
-            changeVal = partial(changeValue,data, numOfRule, "size")
-            # connect the amount change signel to the function
-            widgetMatrix[2][2].currentIndexChanged.connect(changeVal)
-    return container
-        
+
+    # drinkAmount and size are unconditional — every rule gets these
+    widgets["amount"] = QSpinBox()
+    widgets["amount"].setRange(1, 10)
+    widgets["amount"].setValue(int(data["UserSettings"][rule.value]["drinkAmount"]))
+    widgets["unit"] = QComboBox()
+    widgets["unit"].addItems(["Sip", "Shot", "Cup"])
+    widgets["unit"].setCurrentIndex(int(data["UserSettings"][rule.value]["size"]))
+    message.addWidget(widgets["amount"])
+    message.addWidget(widgets["unit"])
+
     
 
+    container.addLayout(message)
+    if "itemList" in spec.features:
+        container.addWidget(widgets["itemList"])
+    if "insertLine" in spec.features:
+        widgets["insertLine"] = QHBoxLayout()
+        widgets["insertLine"].addWidget(widgets["editBox"])
+        widgets["insertLine"].addWidget(widgets["addButton"])
+        widgets["insertLine"].addWidget(widgets["deleteButton"])
+        container.addLayout(widgets["insertLine"])
+    return container, widgets  
+    
+def syncListToData(data, numOfRule, listWidget):
+    items = [listWidget.item(i).text() for i in range(listWidget.count())]
+    changeValue(data, numOfRule, "list", items)
 
 def addNewLine(data, numOfRule, list, editBox):
     if editBox.text().strip():
         list.addItem(editBox.text())
 
         # iteraste to make list
-        items = []
-        for x in range (list.count()):
-            items.append(list.item(x).text())
-        changeValue(data, numOfRule, "list", items)
+        syncListToData(data, numOfRule, list)
 
 def deleteItem(data, numOfRule, list):
     list.takeItem(list.currentRow())
     # iteraste to make list
-    items = []
-    for x in range (list.count()):
-        items.append(list.item(x).text())
-    changeValue(data, numOfRule, "list", items)
+    syncListToData(data, numOfRule, list)

@@ -97,45 +97,32 @@ class MainWindow(QMainWindow):
         data = openJson()
         settings = QDialog()
         settings.setWindowTitle("Settings")
-            # number of rules
-        ruleAmount = len(data["UserSettings"])
-        # row/col num (ruleAmount, number of items in a rule)
-        rows, cols = ruleAmount, len(data["UserSettings"][ruleAmount -1])
-            # make widget arr
-        widgetMatrix = [[0 for c in range(cols)] for r in range(rows)]
+
+        allRuleWidgets: dict[Rule, dict[str, QWidget]] = {}
 
         # Buttons
-            # settings button
         restore = QPushButton("Restore Default")
-        restore.clicked.connect(lambda: config.changeConfig("restore", data, self, ruleAmount, widgetMatrix))
-            # settings button
+        restore.clicked.connect(lambda: config.changeConfig("restore", data, self, allRuleWidgets))
         apply = QPushButton("Apply Changes")
-        apply.clicked.connect(lambda: config.changeConfig("apply", data, self, ruleAmount, widgetMatrix))
-            # settings button
+        apply.clicked.connect(lambda: config.changeConfig("apply", data, self, allRuleWidgets))
         close = QPushButton("Close")
         close.clicked.connect(settings.accept)
 
-        # main laiout
         layout = QVBoxLayout()
-        # button layout
         buttons = QHBoxLayout()
         buttons.addWidget(restore)
         buttons.addWidget(apply)
         buttons.addWidget(close)
-        # appContainer
-        
-            # for length of settings
-        for r in range(rows):
-                # make rule
-            curContainer = config.makeRule(data, widgetMatrix, r)
+
+        for rule in Rule:
+            curContainer, widgets = config.makeRule(data, rule)
+            allRuleWidgets[rule] = widgets
             layout.addLayout(curContainer)
-            layout.addSpacerItem(QSpacerItem(1,40))
+            layout.addSpacerItem(QSpacerItem(1, 40))
+
         layout.addLayout(buttons)
         settings.setLayout(layout)
-        # show all settings
-        # check whch button clicked
         settings.exec()
-        # save changes button
 
 
 
@@ -147,10 +134,10 @@ if __name__=='__main__':
     
     # QApplication instance
     app = QApplication()
-    app.setWindowIcon(QIcon("Logo.png"))
+    app.setWindowIcon(QIcon("LOGO_PATH"))
     # create
     window = MainWindow()
-    window.setWindowIcon(QIcon("Logo.png"))
+    window.setWindowIcon(QIcon("LOGO_PATH"))
     # show
     window.show()
     #program.startProgram(n, state)
