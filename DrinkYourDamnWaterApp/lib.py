@@ -47,13 +47,19 @@ RULE_SPECS: dict[Rule, RuleSpec] = {
     Rule.TIMER:            RuleSpec("After ", {"activeToggle", "timer"}),
     Rule.DOOMSCROLL_TIMER: RuleSpec("After ", {"activeToggle", "timer"}),
 }
-state = 0
+
+
+FIELD_MAP = [
+    ("amount", "drinkAmount", "value", "setValue"),
+    ("unit", "size", "currentIndex", "setCurrentIndex"),
+    ("timer", "time", "value", "setValue"),
+    ("activeToggle", "active", "isChecked", "setChecked"),
+]
+
 
 eventState = thread.Event()
 
 stopFlag = thread.Event()
-
-lock = thread.Lock()
 
 LOGO_PATH = "Logo.png"
 def makeNotifier(title):
@@ -69,6 +75,13 @@ doomScrollNoteTimerNote = makeNotifier("Doomscroll Timer!")
 websiteNote = makeNotifier("Website Notification")
 appTimerNote = makeNotifier("Application Notification")
 
+NOTIFIERS: dict[Rule, Notify] = {
+    Rule.APPLICATION:      appTimerNote,
+    Rule.WEBSITE:          websiteNote,
+    Rule.TIMER:            generalTimerNote,
+    Rule.DOOMSCROLL_TIMER: doomScrollNoteTimerNote,
+}
+
 mpFaceMesh = mp.solutions.face_mesh
 faceMesh = mpFaceMesh.FaceMesh(
         static_image_mode = False,
@@ -79,3 +92,4 @@ faceMesh = mpFaceMesh.FaceMesh(
 
 connectionsFaceOval = mpFaceMesh.FACEMESH_FACE_OVAL
 connectionsIris = mpFaceMesh.FACEMESH_IRISES
+

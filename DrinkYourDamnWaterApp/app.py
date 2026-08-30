@@ -95,13 +95,8 @@ def startProgram(mainTimer, listOfWebsites, listOfApps, regularTimeActive,doomSc
     stopFlag.clear()
     # Initial active window title
     lastActiveWindow = get_lastActiveWindow_title()
-    # not sure if the spam timmer is needed anymore
-    spamTimer = 0
-    lock.acquire() 
-    state = 1
-    lock.release()
     try:
-        while state == 1:
+        while True:
             if stopFlag.is_set():  # check if stop was requested
                 break
             if timer == 0:
@@ -113,9 +108,6 @@ def startProgram(mainTimer, listOfWebsites, listOfApps, regularTimeActive,doomSc
                 eventState.clear()
                 if stopFlag.is_set():  # check again after wait
                     break
-                #lock.acquire() 
-                #print("state"+ str(state))
-                #lock.release()
                 current_window = get_lastActiveWindow_title()
                 if doomScrollTimer == 0:
                     doomScrollTimer = 4*mainDSTimer
@@ -130,14 +122,12 @@ def startProgram(mainTimer, listOfWebsites, listOfApps, regularTimeActive,doomSc
                         print("window: " + current_window)
                         print("act: " + activityName)
                         for app in listOfApps:
-                            if app in lastActiveWindow and spamTimer ==0:
-                                #spamTimer = 5
+                            if app in lastActiveWindow:
                                 appTimerNote.send()
 
                         for site in listOfWebsites:
                             #print(site + " = " + activityName)
-                            if site in activityName and spamTimer ==0:
-                                #spamTimer = 5
+                            if site in activityName:
                                 websiteNote.send()
                     # check if doomscrolling is active
                     if doomScrollActive == True:
@@ -191,8 +181,5 @@ def startProgram(mainTimer, listOfWebsites, listOfApps, regularTimeActive,doomSc
 
             
             timer = timer-1
-            if spamTimer >0:
-                spamTimer = spamTimer-1
-            print(spamTimer)
     except KeyboardInterrupt:
         print("\n Tracking stopped.")

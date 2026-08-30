@@ -1,8 +1,6 @@
 # main.py
 
 # helper functions
-    # app/website tracking
-import tracking as tracking
     # settings
 import settings as config
     # program
@@ -41,22 +39,14 @@ class MainWindow(QMainWindow):
         data = openJson()
         # change start to stop button
         stopBtn = QPushButton("Stop")
-        global state,generalTimerNote,doomScrollNoteTimerNote,websiteNote,appTimerNote
-        for x in range (4):
-            amount = data["UserSettings"][x]["drinkAmount"]
-            drinksize = program.checkSize(amount, data["UserSettings"][x]["size"])
-            match x:
-                case 0:
-                    appTimerNote.message ="Take " + str(data["UserSettings"][x]["drinkAmount"]) + " "+ drinksize+ " " + "of water!"
-                case 1:
-                    websiteNote.message ="Take " + str(data["UserSettings"][x]["drinkAmount"]) + " "+ drinksize+ " " + "of water!"
-                
-                case 2:
-                    generalTimerNote.message ="Take " + str(data["UserSettings"][x]["drinkAmount"]) + " "+ drinksize+ " " + "of water!"
-                case 3:
-                    doomScrollNoteTimerNote.message ="Take " + str(data["UserSettings"][x]["drinkAmount"]) + " "+ drinksize+ " " + "of water!"
+        global generalTimerNote,doomScrollNoteTimerNote,websiteNote,appTimerNote
+        for rule in Rule:
+            record = data["UserSettings"][rule.value]
+            amount = record["drinkAmount"]
+            drinksize = program.checkSize(amount, record["size"])
+            NOTIFIERS[rule].message = "Take " + str(amount) + " " + drinksize + " " + "of water!"
 
-        doomScrollActive = data["UserSettings"][3]["active"]
+        doomScrollActive = data["UserSettings"][Rule.DOOMSCROLL_TIMER.value]["active"]
         
         stopBtn.clicked.connect((lambda: program.stopProgram(self)))
         
@@ -65,8 +55,8 @@ class MainWindow(QMainWindow):
         widget = QWidget()
         widget.setLayout(layout)
         self.setCentralWidget(widget)
-        n = int(data["UserSettings"][2]["time"])
-        startProgramThread = thread.Thread(target=program.startProgram, args=[n,data["UserSettings"][1]["list"], data["UserSettings"][0]["list"],data["UserSettings"][2]["active"],doomScrollActive,int(data["UserSettings"][3]["time"])],daemon=True)
+        n = int(data["UserSettings"][Rule.TIMER.value]["time"])
+        startProgramThread = thread.Thread(target=program.startProgram, args=[n,data["UserSettings"][Rule.WEBSITE.value]["list"], data["UserSettings"][Rule.APPLICATION.value]["list"],data["UserSettings"][Rule.TIMER.value]["active"],doomScrollActive,int(data["UserSettings"][Rule.DOOMSCROLL_TIMER.value]["time"])],daemon=True)
         self.workerThread = startProgramThread
         # start notification system (check app py)
         startProgramThread.start()
@@ -129,18 +119,16 @@ class MainWindow(QMainWindow):
 # make sure this is main
 if __name__=='__main__':    
     # show window
-    state = 0
     n = 10
     
     # QApplication instance
     app = QApplication()
-    app.setWindowIcon(QIcon("LOGO_PATH"))
+    app.setWindowIcon(QIcon(LOGO_PATH))
     # create
     window = MainWindow()
-    window.setWindowIcon(QIcon("LOGO_PATH"))
+    window.setWindowIcon(QIcon(LOGO_PATH))
     # show
     window.show()
-    #program.startProgram(n, state)
     # keep window up indefinately
     app.exec()
     
