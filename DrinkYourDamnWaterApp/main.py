@@ -7,7 +7,7 @@ import settings as config
 import app as program
 from lib import *
 
-
+# open json file
 def openJson():
     with open('settings.json', "r") as json_file:
         data = json.load(json_file)
@@ -40,23 +40,27 @@ class MainWindow(QMainWindow):
         # change start to stop button
         stopBtn = QPushButton("Stop")
         global generalTimerNote,doomScrollNoteTimerNote,websiteNote,appTimerNote
+        # give app.py the rule variables needed
         for rule in Rule:
             record = data["UserSettings"][rule.value]
             amount = record["drinkAmount"]
             drinksize = program.checkSize(amount, record["size"])
             NOTIFIERS[rule].message = "Take " + str(amount) + " " + drinksize + " " + "of water!"
-
+        # check if doom scroll is active
         doomScrollActive = data["UserSettings"][Rule.DOOMSCROLL_TIMER.value]["active"]
-        
+        # connect stop function to button
         stopBtn.clicked.connect((lambda: program.stopProgram(self)))
-        
+        # layout for the app
         layout = QVBoxLayout()
         layout.addWidget(stopBtn)
         widget = QWidget()
         widget.setLayout(layout)
         self.setCentralWidget(widget)
-        n = int(data["UserSettings"][Rule.TIMER.value]["time"])
-        startProgramThread = thread.Thread(target=program.startProgram, args=[n,data["UserSettings"][Rule.WEBSITE.value]["list"], data["UserSettings"][Rule.APPLICATION.value]["list"],data["UserSettings"][Rule.TIMER.value]["active"],doomScrollActive,int(data["UserSettings"][Rule.DOOMSCROLL_TIMER.value]["time"])],daemon=True)
+        # get the general timer value from settings
+        time = int(data["UserSettings"][Rule.TIMER.value]["time"])
+        # connect start button with function
+        startProgramThread = thread.Thread(target=program.startProgram, args=[time,data["UserSettings"][Rule.WEBSITE.value]["list"], data["UserSettings"][Rule.APPLICATION.value]["list"],data["UserSettings"][Rule.TIMER.value]["active"],doomScrollActive,int(data["UserSettings"][Rule.DOOMSCROLL_TIMER.value]["time"])],daemon=True)
+        # put start on a thread
         self.workerThread = startProgramThread
         # start notification system (check app py)
         startProgramThread.start()
@@ -84,13 +88,15 @@ class MainWindow(QMainWindow):
             credits.exec()
     # settings pop up
     def settingsClicked(self):
+        # open settings
         data = openJson()
+        # make a new window (must close in order to assess main again)
         settings = QDialog()
         settings.setWindowTitle("Settings")
-
+        # all rules dictionary
         allRuleWidgets: dict[Rule, dict[str, QWidget]] = {}
 
-        # Buttons
+        # Buttons at the bottom of the window
         restore = QPushButton("Restore Default")
         restore.clicked.connect(lambda: config.changeConfig("restore", data, self, allRuleWidgets))
         apply = QPushButton("Apply Changes")
@@ -103,7 +109,7 @@ class MainWindow(QMainWindow):
         buttons.addWidget(restore)
         buttons.addWidget(apply)
         buttons.addWidget(close)
-
+        # make a new rule and put into dictionary
         for rule in Rule:
             curContainer, widgets = config.makeRule(data, rule)
             allRuleWidgets[rule] = widgets

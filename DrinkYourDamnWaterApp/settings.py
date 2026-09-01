@@ -4,24 +4,28 @@ from lib import *
 
 # write to the setting json
 def changeConfig(instruction, data, settings, allRuleWidgets):
+    # set the user settings as the original settings
     if instruction == "restore":
         data["UserSettings"] = data["OGSettings"]
 
+    # for the corresponding rule
     for rule in Rule:
         widgets = allRuleWidgets[rule]
+        # get the specific number rule it is making
         record = data["UserSettings"][rule.value]
 
         for widgetKey, jsonKey, readMethod, writeMethod in FIELD_MAP:
+            # this rule doesn't have this field
             if widgetKey not in widgets:
-                continue  # this rule doesn't have this field
-
+                continue  
             if instruction == "apply":
                 value = getattr(widgets[widgetKey], readMethod)()
                 record[jsonKey] = value
 
             elif instruction == "restore":
                 value = record[jsonKey]
-                if widgetKey in ("timer", "amount"):  # needs int() cast, like your original code
+                if widgetKey in ("timer", "amount"):
+                    # needs int() cast, like your original code
                     value = int(value)
                 getattr(widgets[widgetKey], writeMethod)(value)
 
@@ -34,7 +38,7 @@ def changeConfig(instruction, data, settings, allRuleWidgets):
                 widgets["itemList"].clear()
                 for item in record["list"]:
                     widgets["itemList"].addItem(item)
-
+    # write to settings json
     with open('settings.json', "w") as json_file:
         json.dump(data, json_file, indent=2)
 
@@ -43,14 +47,17 @@ def changeConfig(instruction, data, settings, allRuleWidgets):
 def changeValue(data, rule: Rule, subpartOfRule, newValue):
     data["UserSettings"][rule.value][subpartOfRule] = newValue   
 
+# make coresponding rule
 def makeRule(data, rule:Rule):
+    # specifications of rules
     spec =  RULE_SPECS[rule]
+    # container of widgets to show
     container = QVBoxLayout()
     message = QHBoxLayout()
     widgets: dict[str, QWidget] = {}
     if "activeToggle" in spec.features:
             widgets["activeToggle"] = QCheckBox()
-            widgets["activeToggle"].setChecked(data["UserSettings"][rule]["active"])
+            widgets["activeToggle"].setChecked(data["UserSettings"][rule.value]["active"])
             message.addWidget(widgets["activeToggle"])
 
     label = QLabel(spec.label)
@@ -89,7 +96,7 @@ def makeRule(data, rule:Rule):
         
 
 
-    # drinkAmount and size are unconditional — every rule gets these
+    # drinkAmount and size are unconditional (every rule gets these)
     widgets["amount"] = QSpinBox()
     widgets["amount"].setRange(1, 10)
     widgets["amount"].setValue(int(data["UserSettings"][rule.value]["drinkAmount"]))
@@ -102,6 +109,7 @@ def makeRule(data, rule:Rule):
     
 
     container.addLayout(message)
+    # attach item list and insert line here for nicer layout
     if "itemList" in spec.features:
         container.addWidget(widgets["itemList"])
     if "insertLine" in spec.features:
@@ -111,16 +119,18 @@ def makeRule(data, rule:Rule):
         widgets["insertLine"].addWidget(widgets["deleteButton"])
         container.addLayout(widgets["insertLine"])
     return container, widgets  
-    
+
+# make sure list is showing correct info
 def syncListToData(data, rule: Rule, listWidget):
     items = [listWidget.item(i).text() for i in range(listWidget.count())]
     changeValue(data, rule, "list", items)
 
+# add a new item in list
 def addNewLine(data, rule: Rule, list, editBox):
     if editBox.text().strip():
         list.addItem(editBox.text())
         syncListToData(data, rule, list)
-
+# delete item
 def deleteItem(data, rule: Rule, list):
     list.takeItem(list.currentRow())
     syncListToData(data, rule, list)

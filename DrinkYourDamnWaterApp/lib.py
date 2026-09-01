@@ -4,14 +4,16 @@ from PySide6.QtWidgets import QApplication, QMainWindow, QPushButton, QDialog, Q
 from PySide6.QtGui import QIcon
 from PySide6.QtCore import Signal
 
+# settings
 import json
 
+# lambda for button functions
 from functools import partial
 
 # time 
 import time
 
-# threding 
+# threading 
 import threading as thread
 
 # notify 
@@ -27,6 +29,7 @@ import os
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 import mediapipe as mp
 
+# data related
 from enum import Enum
 from dataclasses import dataclass
 
@@ -40,6 +43,7 @@ class Rule(Enum):
 class RuleSpec:
     label: str
     features: set[str]
+
 # checks the optional ones based on type of rule
 RULE_SPECS: dict[Rule, RuleSpec] = {
     Rule.APPLICATION:      RuleSpec("Following applications will require ", {"itemList", "addButton", "deleteButton", "editBox", "insertLine"}),
@@ -48,7 +52,7 @@ RULE_SPECS: dict[Rule, RuleSpec] = {
     Rule.DOOMSCROLL_TIMER: RuleSpec("After ", {"activeToggle", "timer"}),
 }
 
-
+# for widgets
 FIELD_MAP = [
     ("amount", "drinkAmount", "value", "setValue"),
     ("unit", "size", "currentIndex", "setCurrentIndex"),
@@ -56,11 +60,11 @@ FIELD_MAP = [
     ("activeToggle", "active", "isChecked", "setChecked"),
 ]
 
-
+# thrweading
 eventState = thread.Event()
-
 stopFlag = thread.Event()
 
+# notification settings
 LOGO_PATH = "Logo.png"
 def makeNotifier(title):
     return Notify(
@@ -70,26 +74,27 @@ def makeNotifier(title):
         default_notification_audio= "freesound_community-ding-101492.wav"
     )
 
-generalTimerNote = makeNotifier("Water Timer!")
-doomScrollNoteTimerNote = makeNotifier("Doomscroll Timer!")
-websiteNote = makeNotifier("Website Notification")
-appTimerNote = makeNotifier("Application Notification")
+generalTimerNotification = makeNotifier("Water Timer!")
+doomScrollTimerNotification = makeNotifier("Doomscroll Timer!")
+websiteNotification = makeNotifier("Website Notification")
+appTimerNotification = makeNotifier("Application Notification")
 
 NOTIFIERS: dict[Rule, Notify] = {
-    Rule.APPLICATION:      appTimerNote,
-    Rule.WEBSITE:          websiteNote,
-    Rule.TIMER:            generalTimerNote,
-    Rule.DOOMSCROLL_TIMER: doomScrollNoteTimerNote,
+    Rule.APPLICATION:      appTimerNotification,
+    Rule.WEBSITE:          websiteNotification,
+    Rule.TIMER:            generalTimerNotification,
+    Rule.DOOMSCROLL_TIMER: doomScrollTimerNotification,
 }
 
-mpFaceMesh = mp.solutions.face_mesh
-faceMesh = mpFaceMesh.FaceMesh(
+# mediaPipe settings
+mediaPipeFaceMesh = mp.solutions.face_mesh
+faceMesh = mediaPipeFaceMesh.FaceMesh(
         static_image_mode = False,
         max_num_faces = 2,
         refine_landmarks = True,
         min_detection_confidence = 0.5
         )
 
-connectionsFaceOval = mpFaceMesh.FACEMESH_FACE_OVAL
-connectionsIris = mpFaceMesh.FACEMESH_IRISES
+connectionsFaceOval = mediaPipeFaceMesh.FACEMESH_FACE_OVAL
+connectionsIris = mediaPipeFaceMesh.FACEMESH_IRISES
 

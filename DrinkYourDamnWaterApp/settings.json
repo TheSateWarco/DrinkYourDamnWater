@@ -40,7 +40,8 @@
       "size": 0,
       "list": [
         "Spotify",
-        "Visual Studio Code"
+        "Visual Studio Code",
+        "New Item"
       ]
     },
     {
@@ -56,7 +57,7 @@
       "type": "RegularTime",
       "active": true,
       "drinkAmount": 1,
-      "time": 60,
+      "time": 1,
       "size": 0
     },
     {
