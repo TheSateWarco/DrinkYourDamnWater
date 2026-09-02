@@ -2,6 +2,12 @@
 # ui pyside
 from lib import *
 
+# add a new item in list
+def addNewLine(data, rule: Rule, list, editBox):
+    if editBox.text().strip():
+        list.addItem(editBox.text())
+        syncListToData(data, rule, list)
+
 # write to the setting json
 def changeConfig(instruction, data, settings, allRuleWidgets):
     # set the user settings as the original settings
@@ -47,6 +53,11 @@ def changeConfig(instruction, data, settings, allRuleWidgets):
 def changeValue(data, rule: Rule, subpartOfRule, newValue):
     data["UserSettings"][rule.value][subpartOfRule] = newValue   
 
+# delete item
+def deleteItem(data, rule: Rule, list):
+    list.takeItem(list.currentRow())
+    syncListToData(data, rule, list)
+
 # make coresponding rule
 def makeRule(data, rule:Rule):
     # specifications of rules
@@ -80,7 +91,7 @@ def makeRule(data, rule:Rule):
     if "deleteButton" in spec.features:
         widgets["deleteButton"] = QPushButton("-")
         widgets["deleteButton"].clicked.connect(
-        lambda: deleteItem(data, rule.value, widgets["itemList"])
+        lambda: deleteItem(data, rule, widgets["itemList"])
     )
 
         
@@ -91,7 +102,7 @@ def makeRule(data, rule:Rule):
     if "addButton" in spec.features:
         widgets["addButton"] = QPushButton("+")
         widgets["addButton"].clicked.connect(
-        lambda: addNewLine(data, rule.value, widgets["itemList"], widgets["editBox"])
+        lambda: addNewLine(data, rule, widgets["itemList"], widgets["editBox"])
     )
         
 
@@ -124,13 +135,3 @@ def makeRule(data, rule:Rule):
 def syncListToData(data, rule: Rule, listWidget):
     items = [listWidget.item(i).text() for i in range(listWidget.count())]
     changeValue(data, rule, "list", items)
-
-# add a new item in list
-def addNewLine(data, rule: Rule, list, editBox):
-    if editBox.text().strip():
-        list.addItem(editBox.text())
-        syncListToData(data, rule, list)
-# delete item
-def deleteItem(data, rule: Rule, list):
-    list.takeItem(list.currentRow())
-    syncListToData(data, rule, list)

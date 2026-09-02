@@ -33,6 +33,7 @@ import mediapipe as mp
 from enum import Enum
 from dataclasses import dataclass
 
+# rule/widgets (this needs to be before notification variables)
 class Rule(Enum):
     APPLICATION = 0
     WEBSITE = 1
@@ -60,7 +61,7 @@ FIELD_MAP = [
     ("activeToggle", "active", "isChecked", "setChecked"),
 ]
 
-# thrweading
+# threading
 eventState = thread.Event()
 stopFlag = thread.Event()
 

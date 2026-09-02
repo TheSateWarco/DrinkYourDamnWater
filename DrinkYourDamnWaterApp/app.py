@@ -1,50 +1,6 @@
 # ui pyside
 from lib import *
 
-
-# get unique index
-def getUnique(connections):
-    # smake a temp list (to save og)
-    tempList = list(connections)
-    # set for getting one instance of index
-    tempSet = set()
-    # go though all indecies
-    for t in tempList:
-        # add both indecies
-        tempSet.add(t[0])
-        tempSet.add(t[1])
-    return list(tempSet)
-
-# get avg number
-def getAvg(list): 
-    return sum(list)/len(list)
-
-# checks Gets the title of the last foreground title 
-# Note: ONLY AVAILIABLE ON WINDOWS
-def getLastActiveWindowTitle():
-    window=win32gui.GetForegroundWindow()
-    return win32gui.GetWindowText(window)
-
-# get website from the title of application
-def extractWebsiteFromTitle(title):
-    #try to extract the website name from the browser title format
-    match=re.search(r'(.+) - (Google Chrome|Mozilla Firefox|Microsoft Edge|DuckDuckGo|Safari)', title) # Regular expression to match the title format
-    # If the title matches the expected format, extract the website name
-    # and return it without the browser name
-    if match:
-        # gets the title of the first part of the website line
-        return match.group(1)
-    return None
-
-# stop main program
-def stopProgram(self):
-    global stopFlag
-    stopFlag.set()    
-    eventState.set()  
-    # get the thread ready for the stop input
-    changeStateThread = thread.Thread(target=changeState, args=[self])
-    changeStateThread.start()
-
 # change state of the program (from working to stopping)
 def changeState(self):
     global eventState
@@ -56,6 +12,21 @@ def changeState(self):
     self.returnToMain.emit()
     eventState.set()
     eventState.clear()
+
+# check the size of the amount in settings
+def checkSize(amount, number):
+    size = ""
+    match number:
+        case 0:
+            size = "sip"
+        case 1:
+            size = "shot"
+        case 2:
+            size = "cup"
+    #print(size)
+    if int(amount) > 1:
+        size = size + "s"
+    return size
 
 # create the main menu (start, help, credits, settings)
 def createMainScreen(self):
@@ -80,20 +51,40 @@ def createMainScreen(self):
         widget = QWidget()
         widget.setLayout(layout)
         self.setCentralWidget(widget)
-# check the size of the amount in settings
-def checkSize(amount, number):
-    size = ""
-    match number:
-        case 0:
-            size = "sip"
-        case 1:
-            size = "shot"
-        case 2:
-            size = "cup"
-    #print(size)
-    if int(amount) > 1:
-        size = size + "s"
-    return size
+
+# get website from the title of application
+def extractWebsiteFromTitle(title):
+    #try to extract the website name from the browser title format
+    match=re.search(r'(.+) - (Google Chrome|Mozilla Firefox|Microsoft Edge|DuckDuckGo|Safari)', title) # Regular expression to match the title format
+    # If the title matches the expected format, extract the website name
+    # and return it without the browser name
+    if match:
+        # gets the title of the first part of the website line
+        return match.group(1)
+    return None
+
+# get avg number
+def getAvg(list): 
+    return sum(list)/len(list)
+
+# checks Gets the title of the last foreground title 
+# Note: ONLY AVAILIABLE ON WINDOWS
+def getLastActiveWindowTitle():
+    window=win32gui.GetForegroundWindow()
+    return win32gui.GetWindowText(window)
+
+# get unique index
+def getUnique(connections):
+    # smake a temp list (to save og)
+    tempList = list(connections)
+    # set for getting one instance of index
+    tempSet = set()
+    # go though all indecies
+    for t in tempList:
+        # add both indecies
+        tempSet.add(t[0])
+        tempSet.add(t[1])
+    return list(tempSet)
 
 # start the water reminders
 def startProgram(mainTimer, listOfWebsites, listOfApps, regularTimeActive,doomScrollActive,mainDSTimer):
@@ -208,3 +199,12 @@ def startProgram(mainTimer, listOfWebsites, listOfApps, regularTimeActive,doomSc
             timer = timer-1
     except KeyboardInterrupt:
         print("\n Tracking stopped.")
+
+# stop main program
+def stopProgram(self):
+    global stopFlag
+    stopFlag.set()    
+    eventState.set()  
+    # get the thread ready for the stop input
+    changeStateThread = thread.Thread(target=changeState, args=[self])
+    changeStateThread.start()
