@@ -129,6 +129,7 @@ if __name__=='__main__':
     
     # QApplication instance
     app = QApplication()
+    app.setStyleSheet(open("style.qss").read())
     app.setWindowIcon(QIcon(LOGO_PATH))
     # create
     window = MainWindow()

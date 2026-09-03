@@ -1,0 +1,40 @@
+QMainWindow, QDialog {
+    background-color: #EAF2FB;
+}
+
+QPushButton {
+    background-color: #6FA8DC;
+    color: white;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    background-color: #5B93C8;
+}
+QPushButton:pressed {
+    background-color: #4A7FAF;
+}
+
+QLabel {
+    color: #2C3E50;
+    font-size: 13px;
+}
+
+QSpinBox, QComboBox, QLineEdit {
+    background-color: #5B93C8;
+    border: 1px solid #C5D6F0;
+    border-radius: 5px;
+    padding: 4px;
+
+}
+
+QCheckBox {
+    spacing: 8px;
+}
+
+QListWidget {
+    background-color: white;
+    border: 1px solid #C5D6F0;
+    border-radius: 5px;
+}
