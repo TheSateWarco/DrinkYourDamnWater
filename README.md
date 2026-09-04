@@ -69,7 +69,7 @@ Issues and pull requests are welcome. This project is still in active developmen
 ---
 
 ## License
-MIT — see LICENSE for details. 
+MIT — see [LICENSE](LICENSE.txt) for details. 
 
 ---
 
