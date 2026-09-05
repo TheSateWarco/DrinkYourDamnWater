@@ -1,5 +1,5 @@
-PySide6
-notify-py
-opencv-python
-mediapipe
-pywin32
+PySide6==6.11.1
+notify-py==0.3.43
+opencv-python==4.11.0.86
+mediapipe==0.10.21
+pywin32==311
