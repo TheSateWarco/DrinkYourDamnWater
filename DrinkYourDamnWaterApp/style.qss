@@ -35,6 +35,7 @@ QCheckBox {
 
 QListWidget {
     background-color: white;
+    color: #2C3E50;
     border: 1px solid #C5D6F0;
     border-radius: 5px;
 }

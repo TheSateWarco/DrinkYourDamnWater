@@ -45,7 +45,7 @@ def changeConfig(instruction, data, settings, allRuleWidgets):
                 for item in record["list"]:
                     widgets["itemList"].addItem(item)
     # write to settings json
-    with open('settings.json', "w") as json_file:
+    with open(SETTINGS_PATH, "w") as json_file:
         json.dump(data, json_file, indent=2)
 
     settings.update()

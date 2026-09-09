@@ -9,9 +9,22 @@ from lib import *
 
 # open json file
 def openJson():
-    with open('settings.json', "r") as json_file:
-        data = json.load(json_file)
-        return data
+    try:
+        with open(SETTINGS_PATH, "r") as json_file:
+            data = json.load(json_file)
+            print("Loaded settings from:", SETTINGS_PATH)
+            print("Applications list:", data["UserSettings"][Rule.APPLICATION.value]["list"])
+            print("Websites list:", data["UserSettings"][Rule.WEBSITE.value]["list"])
+            return data
+    except FileNotFoundError:
+        QMessageBox.critical(None, "Settings Error",
+            f"Couldn't find settings.json.\nExpected it at:\n{SETTINGS_PATH}\n\n"
+            "Make sure settings.json is in the same folder as the app.")
+        raise
+    except json.JSONDecodeError as e:
+        QMessageBox.critical(None, "Settings Error",
+            f"settings.json exists but isn't valid JSON:\n{e}\n\nPath:\n{SETTINGS_PATH}")
+        raise
         
 # main window
 class MainWindow(QMainWindow):
@@ -129,7 +142,7 @@ if __name__=='__main__':
     
     # QApplication instance
     app = QApplication()
-    app.setStyleSheet(open("style.qss").read())
+    app.setStyleSheet(open(resource_path("style.qss")).read())
     app.setWindowIcon(QIcon(LOGO_PATH))
     # create
     window = MainWindow()
@@ -138,4 +151,3 @@ if __name__=='__main__':
     window.show()
     # keep window up indefinately
     app.exec()
-    

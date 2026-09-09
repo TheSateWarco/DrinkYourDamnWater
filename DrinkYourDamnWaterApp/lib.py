@@ -29,6 +29,23 @@ import os
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 import mediapipe as mp
 
+# paths
+import sys
+def resource_path(relative_path):
+    try:
+        # PyInstaller onefile temp extraction dir
+        base_path = sys._MEIPASS  
+    except AttributeError:
+        base_path = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(base_path, relative_path)
+
+def get_app_dir():
+    if getattr(sys, 'frozen', False):
+        return os.path.dirname(sys.executable)
+    return os.path.dirname(os.path.abspath(__file__))
+
+SETTINGS_PATH = os.path.join(get_app_dir(), "settings.json")
+
 # data related
 from enum import Enum
 from dataclasses import dataclass
@@ -66,13 +83,13 @@ eventState = thread.Event()
 stopFlag = thread.Event()
 
 # notification settings
-LOGO_PATH = "Logo.png"
+LOGO_PATH = resource_path("Logo.png")
 def makeNotifier(title):
     return Notify(
         default_notification_title=title,
         default_application_name= "Drink Your Damn Water",
         default_notification_icon= LOGO_PATH,
-        default_notification_audio= "freesound_community-ding-101492.wav"
+        default_notification_audio = resource_path("freesound_community-ding-101492.wav")
     )
 
 generalTimerNotification = makeNotifier("Water Timer!")
@@ -98,4 +115,3 @@ faceMesh = mediaPipeFaceMesh.FaceMesh(
 
 connectionsFaceOval = mediaPipeFaceMesh.FACEMESH_FACE_OVAL
 connectionsIris = mediaPipeFaceMesh.FACEMESH_IRISES
-

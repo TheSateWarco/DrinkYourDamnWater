@@ -7,7 +7,10 @@
       "list": [
         "Spotify",
         "Visual Studio Code",
-        "New Item"
+        "Discord",
+        "Overwatch",
+        "Valorant",
+        "Leauge of Legends"
       ]
     },
     {
@@ -41,7 +44,11 @@
       "size": 0,
       "list": [
         "Spotify",
-        "Visual Studio Code"
+        "Visual Studio Code",
+        "Discord",
+        "Overwatch",
+        "Valorant",
+        "Leauge of Legends"
       ]
     },
     {
@@ -57,7 +64,7 @@
       "type": "RegularTime",
       "active": true,
       "drinkAmount": 1,
-      "time": 6,
+      "time": 60,
       "size": 0
     },
     {
